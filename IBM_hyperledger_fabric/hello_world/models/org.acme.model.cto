@@ -1,0 +1,14 @@
+/**
+ * New model file
+ */
+
+namespace org.acme.myfirstmodel
+
+asset Test identified by testId {
+  o String testId
+  o String message
+}
+
+transaction Hello {
+  --> Test test
+}
