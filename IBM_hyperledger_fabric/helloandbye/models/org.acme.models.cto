@@ -1,0 +1,28 @@
+/**
+ * Hello and Bye
+  Seperate asset for each transaction.
+ */
+
+
+
+namespace org.acme.vocab
+
+
+asset Test identified by testId {
+  o String testId
+  o String message
+}
+
+asset Test_t identified by testId {
+  o String testId
+  o String message
+}
+
+
+transaction Hello {
+  --> Test test
+}
+
+transaction Bye {
+  --> Test_t test_t
+}

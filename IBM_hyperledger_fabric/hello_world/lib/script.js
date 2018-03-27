@@ -1,5 +1,5 @@
 /**
- * New script file
+ * "Hello, World"
  */
 
 /**

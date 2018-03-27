@@ -1,0 +1,5 @@
+{
+	"$class": "org.acme.vocab.Test",
+	"testId": "TEST",
+	"message": "Hello"
+}

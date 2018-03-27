@@ -1,0 +1,5 @@
+{
+	"$class": "org.acme.myfirstmodel.Test",
+	"testId": "TEST",
+	"message": "Hello, World"
+}
