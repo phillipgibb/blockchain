@@ -1,4 +1,4 @@
-### Instally Docker and locally hosting Hyperledger Fabric
+### Instally Docker and locally hosting Hyperledger Fabric; also installs composer module
 
 * Something to note is that virtualbox is unable to be installed onto Windows10 bash because of compadability issueses. 
 
