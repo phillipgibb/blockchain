@@ -54,3 +54,47 @@ There are three main participants:
 - Step 5: An ordered list of peers is determined, and a leader is elected based on the YAC consensus logic. Each peer casts a vote by signing and sending their proposed block to the leader.
 
 - Step 6: If the leader receives enough signed proposed blocks (more than 2/3 of the peers) then it starts to send a commit message, indicating that this block should be applied to the chain of each peer participating in the consensus. Once the commit message has been sent, the proposed block becomes the next block in the chain of every peer via the synchronizer.
+
+### YAC (Yet Another Consensus)
+
+Hyperledger Iroha currently implements a consensus algorithm called YAC, which is based on voting for block hash.
+
+Consensus involves taking blocks after they have been validated, collaborating with other blocks to decide on commit, and propagating commits between peers.
+
+The YAC consensus performs two functions: ordering and consensus.
+
+Ordering is responsible for ordering all transactions, packaging them into proposals, and sending them to peers in the network. 
+
+The ordering service is an endpoint for setting and order of transactions and their broadcast (in a form of proposal).
+
+Ordering is not responsible for performing stateful validation of transactions.
+
+Note: Currently, the ordering service is a single point of failure that does the ordering, and, therefore, Hyperledger Iroha is neither crash fault-tolerant, nor byzantine fault-tolerant.
+
+Consensus is responsible for agreement on blocks based on the same proposal.
+
+Validation is an important part of the transaction flow, however it is separate from the consensus process.
+
+### YAC - Steps to successful consensus
+
+- Step 1: The ordering service shares a proposal to all peers. A proposal is an unsigned block created and shared to peers in the network by the ordering service. It conains a batch of ordered transactions.
+
+- Step 2: Peers calculate the hash of a verified proposal and sign it. The resulting <Hash, Signature> tuple is called a vote.
+
+- Step 3: Based on the hashes created in the previous step, each peer computes an ordering list or order of peers. To do this, the ordering function will need to have knowledge of all the peers voting in the network, and is based on the hash of the proposed block. The first peer in the list is called the leader. The leader is responsible for collecting votes from other peers and sending the commit message.
+
+- Step 4: Each peer votes. The leader collects all the votes and determines the supermajority of votes for a certain hash. The leader sends a commit message that contains the votes of the committing block. This response is called a commit.
+
+- Step 5: After receiving the commit, the peers verfy the commit and apply the block to the ledger. At this point, consensus is complete.
+
+### YAC - Failure to reach consensus
+
+Broken leader: the leader may act unfairly in the collection of votes, or it takes the leader too long to respond with a commit. In such situations, other peers set a time for receiving a commit message from the leader. If the time expires, the next peer in the order list becomes the new leader.
+
+Bad transaction: from the ordering service, the ordering service may forward transactions that do not pass stateless validation. To rectify this, peers should remove those transactions from the proposal, and further compute the hash from the rest of the transactions in the proposal.
+
+### Mobile Libraries
+
+One of the most defining characteristics of Hyperledger Iroha is its focus on providing mobile libraries.
+
+    ~/framework/Hyperledger_iroha/mobile_libraries

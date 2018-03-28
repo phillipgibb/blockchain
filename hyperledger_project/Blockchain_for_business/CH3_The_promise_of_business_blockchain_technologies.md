@@ -117,6 +117,7 @@ In addition to the hash, you may also choose to store the location of the file i
 ### Finance
 
 David Treat, Accenture
+
     "Blockchain has huge potential to move the financial services industry from messaged based models, slow reconciliation processes and inefficiency of fragmented data stores. With blockchain, financial services can move to a shared data construct, driving down costs, increasing efficiency and opening up entirely new business models."
 
 The Bitcoin blockchain was created as a peer to peer electronic cash system. 

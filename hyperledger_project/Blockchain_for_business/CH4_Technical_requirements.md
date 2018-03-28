@@ -10,9 +10,11 @@
 ### Installing cURL
 
 Install cURL
+
     sudo apt install curl
 
 check version
+
     curl -V
 
 ### Installing Docker
@@ -28,10 +30,6 @@ export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 export PATH="$PATH:/mnt/c/Program\ Files/Docker/Docker/resources/bin"
 alias docker=docker.exe
 alias docker-compose=docker-compose.exe
-1
-2
-3
-4
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 export PATH="$PATH:/mnt/c/Program\ Files/Docker/Docker/resources/bin"
 alias docker=docker.exe
@@ -54,16 +52,6 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get update
 # Install Docker
 sudo apt-get install docker-ce
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
 # Install packages to allow apt to use a repository over HTTPS
 $ sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 # Add Docker's official GPG key
@@ -141,15 +129,18 @@ Mission accomplished!
 ### Docker Compose
 
 Install Docker Compose
+
     sudo apt update
     sudo apt install docker-compose
 
 for better instructions go to
+
     ~/IBM_hyperledger_fabric/Notes.md
 
 ### Installing Node.js and npm
 
 Install node.js and npm
+
     Just install brew and then install node@6 
 
 ### Installing Go Language

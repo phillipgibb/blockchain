@@ -3,6 +3,7 @@
 Hyperledger is a group of open source projects focused around cross-industry distributed ledger technologies. 
 
 Arnaud Le Hors:
+
     "these projects show how broadly applicable blockchain technology really is, This goes way beyond cryptocurrencies"
 
 Hyperledger provides an alternative to the cryptocurreny-based blockchain model, and focuses on developing blockchain frameworks and modules to support global enterprise solutions. 
@@ -47,13 +48,17 @@ Hyperledger Fabric v1.0
 - Permissioned deployments
 
 Brian Behlendorf
+
     "If you have a larger blockchain network and you want to share data with only certain parties, you can create a private channel with just those participants. It is the most distinctive thing about Fabric now."
 
 Hyperledger Indy
 - Decentralized Identity
+
     "...decentralized identity specs and artifacts that are independent of any particular ledger and will enable interoperability across any DLT that supports them."
+
 - Manage and control digital identities
 - Rather than businesses store huge amounts of personal data; businesses store pointers to identity.
+
     "...identity is a toxic asset that could present a liability to organizatons."
     "Hyperledger Indy lets users authenticate identity based on the attributes they are willing to store and share themselves. This can reduce the amount of liability contained within a business because the data can be kept with the user and presented to you again in a way that you can trust and validate that what has been said really was said and is trusted by the other parties you do business with."
 
@@ -71,6 +76,7 @@ Auxiliary softwares used for things like deploying and maintaining blockchains, 
 Hyperledger Cello
 - Toolkit that allows Blockchain deployment to the cloud.
 - Operators can create and manage blockchains through a dashboard, and users can obtain a blockchain instance immediately.
+
     "Cello aims to bring the on-demand 'as-a-service' deployment model to the blockchain ecosystem"
 
 Hyperledger Explorer
@@ -87,7 +93,7 @@ Hyperledger Explorer
 Hyperledger Composer
 
     ~/module/composer
-    
+
 - Suite of tools for building blockchain business networks
 - Model business blockchain network
 - Generate REST APIs for interacting with your blockchain network
