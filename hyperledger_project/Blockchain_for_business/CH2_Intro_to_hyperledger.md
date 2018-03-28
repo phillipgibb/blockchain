@@ -21,6 +21,7 @@ Hyperledger business blockchain frameworks are used to build enterprise blockcha
 ### List of Hyperledger Frameworks
 
 Hyperledger Iroha v0.95
+    ~/framework/Hyperledger_iroha
 - Simple construction
 - Modern
 - Domain-driven C++ design
@@ -35,6 +36,7 @@ Hyperledger Sawtooth v0.8
 - Support for both permissioned and permissionless deployments
 
 Hyperledger Fabric v1.0
+    ~/framework/IBM_hyperledger_fabric
 - Modular architecture
 - Allows entities to conduct confidential transactions without passing info to central authority
 - Different channels run within the network and the division of labor that characterizes different nodes within the network
@@ -79,6 +81,7 @@ Hyperledger Explorer
 - Web server, web UI, web sockets, database, security repos, and blockchain implementation
 
 Hyperledger Composer
+    ~/module/composer
 - Suite of tools for building blockchain business networks
 - Model business blockchain network
 - Generate REST APIs for interacting with your blockchain network

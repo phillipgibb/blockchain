@@ -13,12 +13,12 @@ https://www.atlassian.com/git/tutorials/install-git
 # install node version 6
 https://medium.com/@katopz/how-to-install-specific-nodejs-version-c6e1cec8aa11
 
-~$ brew update
-~$ brew install node@6
-~$ brew unlink node
-~$ brew link node@6
-~$ node --version
-~$ npm --version 
+    ~$ brew update
+    ~$ brew install node@6
+    ~$ brew unlink node
+    ~$ brew link node@6
+    ~$ node --version
+    ~$ npm --version 
 
 ### install docker
  Installed on Windows 10 linux(bash) subsystem. Note that virtualbox wont be able to be installed onto the bash subsystem.
