@@ -1,0 +1,51 @@
+/** Sample queries for Commodity Trading business network
+*/
+
+query selectCommodities {
+  description: "Select all commodities"
+  statement:
+      SELECT org.acme.biznet.Commodity
+}
+
+query selectCommoditiesByExchange {
+  description: "Select all commodities based on their main exchange"
+  statement:
+      SELECT org.acme.biznet.Commodity
+          WHERE (mainExchange==_$exchange)
+}
+
+query selectCommoditiesByOwner {
+  description: "Select all commodities based on their owner"
+  statement:
+      SELECT org.acme.biznet.Commodity
+          WHERE (owner == _$owner)
+}
+
+query selectCommoditiesWithHighQuantity {
+  description: "Select commodities based on quantity"
+  statement:
+      SELECT org.acme.biznet.Commodity
+          WHERE (quantity > 60)
+}
+
+query selectCommoditiesOrdered {
+  description: "Select commodities ordered by quantity"
+  statement:
+      SELECT org.acme.biznet.Commodity
+      ORDER BY [quantity ASC]
+}
+
+query selectCommoditiesOrderedReverse {
+  description: "Select commodities ordered by quantity"
+  statement:
+      SELECT org.acme.biznet.Commodity
+      ORDER BY [quantity DESC]
+}
+
+query selectCommoditiesWithMidQuantity {
+  description: "Select commodities based on quantity and owner"
+  statement:
+      SELECT org.acme.biznet.Commodity
+          WHERE (quantity >= 30 AND quantity < 60 AND owner == _$owner)
+}
+

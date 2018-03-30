@@ -1,0 +1,21 @@
+<div class="footer-bg-break docs-footer-break">
+<div class="footer-container-break">
+    <div class="footer-left-break">
+      <p>Released under the Apache License v2.0</p>
+    </div>
+  <div class="footer-right-break">
+    <ul>
+      <li><a href="https://github.com/hyperledger/composer">GitHub</a></li>
+      <li><a href="http://stackoverflow.com/questions/tagged/fabric-composer">Stack Overflow</a></li>
+      {% if site.status == "stable" %}
+      <li><a href="https://hyperledger.github.io/composer/latest">Latest (Unstable) Docs</a></li>
+      {% elsif site.status == "latest" %}
+      <li><a href="https://hyperledger.github.io/composer/stable">Stable (Supported) Docs</a></li>
+      {% else %}
+      <li><a href="https://hyperledger.github.io/composer/latest">Latest (Unstable) Docs</a></li>
+      <li><a href="https://hyperledger.github.io/composer/stable">Stable (Supported) Docs</a></li>
+      {% endif %}     
+    </ul>
+  </div>
+</div>
+</div>

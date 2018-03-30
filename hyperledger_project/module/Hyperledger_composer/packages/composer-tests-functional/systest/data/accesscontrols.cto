@@ -1,0 +1,47 @@
+namespace systest.accesscontrols
+
+asset SampleAsset identified by assetId {
+  o String assetId
+  o String theValue
+  --> SampleParticipant owner
+}
+
+participant SampleParticipant identified by email {
+  o String email
+  o String firstName
+  o String lastName
+  --> SampleAsset asset
+}
+
+
+transaction SampleTransaction {
+   
+}
+
+asset txAsset identified by assetId {
+  o String assetId
+  o String theValue
+}
+
+transaction UpdateAssetValue {
+  o txAsset  theAsset
+  o String   newValue 
+}
+
+
+
+asset Answer identified by aid {
+  o String aid
+  o String text
+}
+
+asset Question identified by qid {
+  o String qid
+  o String question
+  --> Answer correctAnswer
+}
+
+transaction MarkQuestion {
+  o String text
+  --> Question question
+}

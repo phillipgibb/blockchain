@@ -1,0 +1,51 @@
+@import '../../../assets/styles/base/colors';
+@import '../../../assets/styles/base/variables';
+
+.add-certificate {
+    width: 700px;
+    min-height: 450px;
+
+    display: flex;
+    flex-direction: column;
+
+    section {
+        font-size: 0.9em;
+
+        file-importer {
+            margin-top: $space-medium;
+        }
+
+        span {
+            color: $secondary-text;
+        }
+
+        form {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: $space-medium;
+        }
+    }
+
+    .import-certificate {
+        display: flex;
+        flex-direction: column;
+        .row {
+            flex: 1;
+            display: flex;
+            margin-bottom: $space-medium;
+            .property {
+                font-weight: 600;
+                flex-basis: 20%;
+                margin-right: 5px;
+            }
+            .value {
+                flex: 1;
+            }
+        }
+
+    }
+
+    footer {
+      justify-content: space-between;
+    }
+}
