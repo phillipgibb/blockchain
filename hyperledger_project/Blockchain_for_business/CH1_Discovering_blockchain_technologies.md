@@ -20,9 +20,9 @@ Transactions established by trust, accountability, and transparency at their cor
 
 - Genesis block is the inital record for the distributed ledger.
 
-Nodes or machines on a blockchain network groups up transactions and sen them through the network.
+Nodes or machines on a blockchain network groups up transactions and sends them through the network.
 
-The process of blockchain syncing up has to do with a concept of consensus - and agreement among the network peers.
+The process of blockchain syncing up has to do with a concept of consensus - an agreement among the network peers.
 
 Each node will have the exact copy of the blockchain through the network.
 
@@ -47,7 +47,7 @@ A block consists of 4 pieces of metadata.
 
 ### Merkle Tree
 
-Merkle Tree is a binary hash tree. Which is a sata structure that is used to store hashes of the individual data in large datasets in a way to make the verification of the dataset efficient.
+Merkle Tree is a binary hash tree. Which is a data structure that is used to store hashes of the individual data in large datasets in a way to make the verification of the dataset efficient.
 
 It is a anti-tamper mechanism that ensures that the large dataset has not been changed.
 
@@ -61,7 +61,7 @@ Transactions on a blockchain are records of an event, cryptographically secured 
 
 On the Bitcoin blockchain, transactions involve the transfer of bitcoin, while in other blockchains, transactions may involve the transfer of any asset or a record of some service being rendered.
 
-A smart contract within the blockchain may allow automatic execution of transaction upon metting predefined criteria.
+A smart contract within the blockchain may allow automatic execution of transaction upon meeting predefined criteria.
 
 ### Cryptography
 
@@ -69,13 +69,13 @@ Key in security as well as in the immutability of the transactions recored on bl
 
 Cryptocurreny is the study of the technology used to allow secure communications between different parties and to ensure the authenticity and immutability of the data being communicated.
 
-For blockchain technologies, cryptography is used to prove that a transaction was created by the right person. it is also used to link transactions into a block in a tamper-proof way as well as create the links between blocks, to form a blockchain.
+For blockchain technologies, cryptography is used to prove that a transaction was created by the right person. It is also used to link transactions into a block in a tamper-proof way as well as creating the links between blocks, to form a blockchain.
 
 ### Difference between blockchain and Databases
 
 A blockchain is a write-only data structure, where new entries get appended onto the end of the ledger. Every new block gets appended to the blockchain by linking to the previous block's hash.
 
-There are no administratr permissions within a blockchain that allows editing or deleting of data.
+There are no administrative permissions within a blockchain that allows editing or deleting of data.
 
 Basically in a relational database, data can be easily modified or deleted, database admins who make changes to any part of the data and/or structure.
 
@@ -103,7 +103,7 @@ Most applications utilize a central server or servers. For one user/client to se
 
 Peer to peer (P2P) networks were first made popular by Napster and later Bittorrent, Tor, etc. This consists of computer systems which are directly connected to each other via the internet, without a central server.
 
-Peers contribute to the computing power and storage that is required for the upkeep of the network. P2P networks are generally considered to be more secure than centralized networks, as they do not have a single point of attack, as in the case of a server-based network, where the security of the entire network can be compromised if the cnetral server is successfully attacked. 
+Peers contribute to the computing power and storage that is required for the upkeep of the network. P2P networks are generally considered to be more secure than centralized networks, as they do not have a single point of attack, as in the case of a server-based network, where the security of the entire network can be compromised if the central server is successfully attacked. 
 
 As a result, large corps invest significant amounts of financial resources to fortify their central servers.
 
@@ -116,11 +116,11 @@ Here are examples of consensus mechanisms or algorithms
 - Proof of work
 - Proof of Stake
 - Proof of Elapsed Time
-- Simplified Byzantine Fault tolerance
+- Simplified Byzantine Fault tolerance aka YAC
 
 ### Immutability of Data
 
-Immutability of the data which sits on the blockchain is the most important reason to deploy blockchain-based solutions for a variet of centralized servers.
+Immutability of the data which sits on the blockchain is the most important reason to deploy blockchain-based solutions for a variety of centralized servers.
 
 - Immutability or unchanging over time feature makes the blockchain useful for accounting, financial transactions, identity management, and asset ownership, management and transfer.
 
