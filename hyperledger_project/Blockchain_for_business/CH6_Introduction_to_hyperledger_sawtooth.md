@@ -339,6 +339,12 @@ Log into client container
 
     docker exec -it sawtooth-client-default bash
 
+If you get a TTY device error
+
+try running it as
+
+    docker exec -t sawtooth-client-default bash
+
 In your terminal, you will see something similar to the following:
 
     root@9832988329832:/#
@@ -354,6 +360,8 @@ After running this command, you should see a json object response with "data", a
 And to check the connectivity from the host computer, run the following command in a new terminal window ( it does not need to be the same dir as mentioned previously in this section):
 
     curl http://localhost:8080/blocks
+
+Running into problem here. For some reason netstat isnt showing any connections with bash or with admin bash. Connection denied, taking some time to debug.
 
 After running this command, you should see a json object response with "data", array of batches, header, etc.
 
