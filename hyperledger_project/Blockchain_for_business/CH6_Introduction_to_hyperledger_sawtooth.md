@@ -363,6 +363,10 @@ And to check the connectivity from the host computer, run the following command 
 
 After running this command, you should see a json object response with "data", array of batches, header, etc.
 
+Just check localhost:8080/blocks on internet browser.
+If you run into any errors or it hangs just restart process or do CTRL-C to see if it is because some processes hasent been completed. 
+
+
 ### Stopping Hyperledger Sawtooth
 
 First press Ctrl+C from the window where you originally ran 
@@ -639,4 +643,14 @@ Once an asset address for a specific tuna is created with the sha512 hash, the s
 Within the user interface, select the owner of the tuna in the Select Holder dropdown, then provide a unique name for the tuna in the Create Tuna Record Text box.
 
 Lastly, click the Create button.
+
+If you run into any errors or it hangs just restart process or do CTRL-C to see if it is because some processes hasent been completed. 
+
+So far have done everything on the instructions and installation on window's linux sub system.
+
+For 
+
+    access-control-allow-origin 
+
+errors I installed a chrome browser thing that does it for you, its the simpliest fix but you can depending on how the application was created either fix it in the web.conf file or use a middleware thing called CORS, to be able to get to the localhost resources from any browser.
 
