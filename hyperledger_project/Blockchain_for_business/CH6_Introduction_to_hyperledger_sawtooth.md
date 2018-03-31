@@ -813,3 +813,5 @@ Through the client application, users(fisherman, regulator, restaurant) are able
 Through a REST API, the client application creates a batch containing a single transction, and submits it to the validator.
 
 The validator applies the transaction processor, which makes a change to the state (e.g., creating a record of a tuna catch).
+
+On chrome just wait and toggle the active button until the transactions show up.
