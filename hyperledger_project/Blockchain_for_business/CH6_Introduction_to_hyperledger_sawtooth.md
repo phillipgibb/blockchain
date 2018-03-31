@@ -555,31 +555,31 @@ folder.
 
 Users are just public/private key pairs stored in localStorage.
 
-    makePrivateKey: () => {
+makePrivateKey: () => {
 
-        let privateKey
+    let privateKey
 
-        do privateKey = randomBytes(32)
+    do privateKey = randomBytes(32)
 
-        while (!secp256k1.privateKeyVerify(privateKey))
+    while (!secp256k1.privateKeyVerify(privateKey))
 
-        return privateKey.toString('hex')
+    return privateKey.toString('hex')
 
-    }
+}
 
 This function creates a random 256-bit private key represented as a 64-char hex string on the client side.
 
 This should not be shared with anyone else.
 
-    getPublicKey: privateKey => {
+getPublicKey: privateKey => {
 
-        const privateBuffer = _decodeHex(privateKey)
+    const privateBuffer = _decodeHex(privateKey)
 
-        const publicKey = secp256k1.publicKeyCreate(privateBuffer)
+    const publicKey = secp256k1.publicKeyCreate(privateBuffer)
 
-        return publicKey.toString('hex')
+    return publicKey.toString('hex')
 
-    }
+}
 
 This function returns the public key derived from the 256-bit private key created above.
 

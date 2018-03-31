@@ -123,31 +123,31 @@ folder.
 
 Users are just public/private key pairs stored in localStorage.
 
-    makePrivateKey: () => {
+makePrivateKey: () => {
 
-        let privateKey
+    let privateKey
 
-        do privateKey = randomBytes(32)
+    do privateKey = randomBytes(32)
 
-        while (!secp256k1.privateKeyVerify(privateKey))
+    while (!secp256k1.privateKeyVerify(privateKey))
 
-        return privateKey.toString('hex')
+    return privateKey.toString('hex')
 
-    }
+}
 
 This function creates a random 256-bit private key represented as a 64-char hex string on the client side.
 
 This should not be shared with anyone else.
 
-    getPublicKey: privateKey => {
+getPublicKey: privateKey => {
 
-        const privateBuffer = _decodeHex(privateKey)
+    const privateBuffer = _decodeHex(privateKey)
 
-        const publicKey = secp256k1.publicKeyCreate(privateBuffer)
+    const publicKey = secp256k1.publicKeyCreate(privateBuffer)
 
-        return publicKey.toString('hex')
+    return publicKey.toString('hex')
 
-    }
+}
 
 This function returns the public key derived from the 256-bit private key created above.
 
@@ -211,3 +211,14 @@ Once an asset address for a specific tuna is created with the sha512 hash, the s
 Within the user interface, select the owner of the tuna in the Select Holder dropdown, then provide a unique name for the tuna in the Create Tuna Record Text box.
 
 Lastly, click the Create button.
+
+If you run into any errors or it hangs just restart process or do CTRL-C to see if it is because some processes hasent been completed. 
+
+So far have done everything on the instructions and installation on window's linux sub system.
+
+For 
+
+    access-control-allow-origin 
+
+errors I installed a chrome browser thing that does it for you, its the simpliest fix but you can depending on how the application was created either fix it in the web.conf file or use a middleware thing called CORS, to be able to get to the localhost resources from any browser.
+
