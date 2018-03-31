@@ -123,31 +123,31 @@ folder.
 
 Users are just public/private key pairs stored in localStorage.
 
-makePrivateKey: () => {
+    makePrivateKey: () => {
 
-    let privateKey
+        let privateKey
 
-    do privateKey = randomBytes(32)
+        do privateKey = randomBytes(32)
 
-    while (!secp256k1.privateKeyVerify(privateKey))
+        while (!secp256k1.privateKeyVerify(privateKey))
 
-    return privateKey.toString('hex')
+        return privateKey.toString('hex')
 
-}
+    }
 
 This function creates a random 256-bit private key represented as a 64-char hex string on the client side.
 
 This should not be shared with anyone else.
 
-getPublicKey: privateKey => {
+    getPublicKey: privateKey => {
 
-    const privateBuffer = _decodeHex(privateKey)
+        const privateBuffer = _decodeHex(privateKey)
 
-    const publicKey = secp256k1.publicKeyCreate(privateBuffer)
+        const publicKey = secp256k1.publicKeyCreate(privateBuffer)
 
-    return publicKey.toString('hex')
+        return publicKey.toString('hex')
 
-}
+    }
 
 This function returns the public key derived from the 256-bit private key created above.
 
@@ -167,39 +167,39 @@ You can use this same dropdown to switch between multiple users in localStorage.
 
 ### Creating a Record a Tuna
 
-const createAsset = (asset, owner, state) => {
+    const createAsset = (asset, owner, state) => {
 
-    const address = getAssetAddress(asset)
+        const address = getAssetAddress(asset)
 
-    return state.get([address])
+        return state.get([address])
 
-        .then(entries => {
+            .then(entries => {
 
-            const entry = entries[address]
+                const entry = entries[address]
 
-            if (entry && entry.length > 0) {
+                if (entry && entry.length > 0) {
 
-                throw new InvalidTransaction('Asset name in use')
+                    throw new InvalidTransaction('Asset name in use')
 
-            }
+                }
 
-            return state.set({
+                return state.set({
 
-                [address]: encode({name: asset, owner})
+                    [address]: encode({name: asset, owner})
+
+                })
 
             })
 
-        })
+    }
 
-}
+    const getAddress = (key, length = 64) => {
 
-const getAddress = (key, length = 64) => {
+        return createHash('sha512').update(key).digest('hex').slice(0, length)
 
-    return createHash('sha512').update(key).digest('hex').slice(0, length)
+    }
 
-}
-
-const getAssetAddress = name => PREFIX + '00' + getAddress(name, 64)
+    const getAssetAddress = name => PREFIX + '00' + getAddress(name, 64)
 
 The createAsset function adds a new asset to the state by taking in an asset name, owner as the public key, and state. 
 
