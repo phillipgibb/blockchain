@@ -752,28 +752,473 @@ Init is called during the chaincode instantiation data required by the applicati
 
 In our sample, we will create the inital key/value pair for an asset, as specified on the command line:
 
-func (t *SampleChaincode) Init(stub shim.ChainCodeStubInterface) peer.Response {
+    func (t *SampleChaincode) Init(stub shim.ChainCodeStubInterface) peer.Response {
 
-    // Get the args from the transaction proposal
+        // Get the args from the transaction proposal
 
-    args := stub.GetStringArgs()
+        args := stub.GetStringArgs()
 
-    if len(args) != 2 {
+        if len(args) != 2 {
 
-        return shim.Error("Incorrect arguments. Expecting a key and a value")
+            return shim.Error("Incorrect arguments. Expecting a key and a value")
+
+        }
+
+        // We store the key and the value on the ledger
+
+        err := stub.PutState(args[0], []byte(args[1]))
+
+        if err != nil {
+
+            return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+
+        }
+
+        return shim.Success(nil)
 
     }
 
-    // We store the key and the value on the ledger
+The Init implementation accepts two parameters as inputs, and proposes to write a key/value pair to the ledger by using the stub.PutState function. GetStringArgs retrieves and checks the validity of arguments which we expect to be a key/value pair. Therefore, we check to ensure that there are two arguments specified. If not, we return an error from the Init method, to indicate that something went wrong. Once we have verified the correct number of arguments, we can store the initial state in the ledger. In order to accomplish this, we call the stub.PutState function, specifying the first argument as the key, and the second argument as the value for that key. If no errors are returned, we will return success from the Init method.
+
+### Sample Chaincode Decomposed - Invoke Method
+
+Now, we’ll explore the Invoke method, which gets called when a transaction is proposed by a client application. In our sample, we will either get the value for a given asset, or propose to update the value for a specific asset.
+
+    func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
+
+    // Extract the function and args from the transaction proposal
+
+    fn, args := stub.GetFunctionAndParameters()
+
+    var result string
+
+    var err error
+
+    if fn == "set" {
+
+    result, err = set(stub, args)
+
+    } else { // assume 'get' even if fn is nil
+
+    result, err = get(stub, args)
+
+    }
+
+    if err != nil { //Failed to get function and/or arguments from transaction proposal
+
+    return shim.Error(err.Error())
+
+    }
+
+    // Return the result as success payload
+
+    return shim.Success([]byte(result))
+
+    }
+
+There are two basic actions a client can invoke: get and set.
+
+The get method will be used to query and return the value of an existing asset.
+The set method will be used to create a new asset or update the value of an existing asset.
+To start, we’ll call GetFunctionandParameters to isolate the function name and parameter variables. Each transaction is either a set or a get. Let's first look at how the set method is implemented:
+
+    func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+
+    if len(args) != 2 {
+
+    return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
+
+    }
 
     err := stub.PutState(args[0], []byte(args[1]))
 
     if err != nil {
 
-        return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+    return "", fmt.Errorf("Failed to set asset: %s", args[0])
+
+    }
+
+    return args[1], nil
+
+    }
+
+The set method will create or modify an asset identified by a key with the specified value. The set method will modify the world state to include the key/value pair specified. If the key exists, it will override the value with the new one, using the PutState method; otherwise, a new asset will be created with the specified value.
+
+Next, let's look at how the get method is implemented:
+
+    func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+
+    if len(args) != 1 {
+
+    return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+
+    }
+
+    value, err := stub.GetState(args[0])
+
+    if err != nil {
+
+    return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+
+    }
+
+    if value == nil {
+
+    return "", fmt.Errorf("Asset not found: %s", args[0])
+
+    }
+
+    return string(value), nil
+
+    }
+
+The get method will attempt to retrieve the value for the specified key. If the application does not pass in a single key, an error will be returned; otherwise, the GetState method will be used to query the world state for the specified key. If the key has not yet been added to the ledger (and world state), then an error will be returned; otherwise, the value that was set for the specified key is returned from the method.
+
+### Sample Chaincode Decomposed - Main Function
+
+The last piece of code in this sample is the main function, which will call the Start function. The main function starts the chaincode in the container during instantiation.
+
+    func main() {
+
+    err := shim.Start(new(SampleChaincode))
+
+    if err != nil {
+
+    fmt.Println("Could not start SampleChaincode")
+
+    } else {
+
+    fmt.Println("SampleChaincode successfully started")
+
+    }
+
+    }
+
+### Setting the Stage
+
+Now that we have a general idea of how chaincode is coded, we will walk through a simple chaincode that creates assets on a ledger, based on our demonstrated scenario of creating records for tuna fish.
+
+Sometimes, code snippets can get lost in translation, especially if the context doesn’t make much sense. In hopes of avoiding this, we have adjusted our example chaincode to address our demonstration scenario. The chaincode we will be examining in this section will record a tuna catch by storing it to the ledger, as well as allow for queries and updates to tuna catch records.
+
+### Defining the Asset Attributes
+
+Here are the four example attributes of tuna fish that we will be recording on the ledger:
+
+Vessel (string)
+Location (string)
+Date and Time (datetime)
+Holder (string)
+We create a Tuna Structure that has four properties. Structure tags are used by the encoding/json library.
+
+    type Tuna struct {
+
+    Vessel string ‘json:"vessel"’
+
+    Datetime string ‘json:"datetime"’
+
+    Location string ‘json:"location"’
+
+    Holder string ‘json:"holder"’
+
+    }
+
+### Invoke Method
+
+As described earlier, the Invoke method is the one which gets called when a transaction is proposed by a client application. Within this method, we have three different types of transactions -- recordTuna, queryTuna, and changeTunaHolder, which we will look at a little later.
+
+As a reminder, Sarah, the fisherman, will invoke the recordTuna when she catches each tuna.
+
+changeTunaHolder can be invoked by Miriam, the restaurateur, when she confirms receiving and passing on a particular tuna fish as it passes through the supply chain. queryTuna can be invoked by Miriam, the restaurateur, to view the state of a particular tuna.
+
+Regulators will invoke queryTuna and queryAllTuna based on their need to verify and check for sustainability of the supply chain.
+
+We’ll be getting into the different tuna chaincode methods in the following sections. But here is the Invoke method. As you can see, this method will look at the first parameter to determine which function should be called, and invoke the appropriate tuna chaincode method.
+
+    func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
+
+    // Retrieve the requested Smart Contract function and arguments
+
+    function, args := APIstub.GetFunctionAndParameters()
+
+    // Route to the appropriate handler function to interact with the ledger appropriately
+
+    if function == "queryTuna" {
+
+    return s.queryTuna(APIstub, args)
+
+    } else if function == "initLedger" {
+
+    return s.initLedger(APIstub)
+
+    } else if function == "recordTuna" {
+
+    return s.recordTuna(APIstub, args)
+
+    } else if function == "queryAllTuna" {
+
+    return s.queryAllTuna(APIstub)
+
+    } else if function == "changeTunaHolder" {
+
+    return s.changeTunaHolder(APIstub, args)
+
+    }
+
+    return shim.Error("Invalid Smart Contract function name.")
+
+    }
+
+### Chaincode Methods - queryTuna
+
+The queryTuna method would be used by a fisherman, regulator, or restaurateur to view the record of one particular tuna. It takes one argument - the key for the tuna in question.
+
+    func (s *SmartContract) queryTuna(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+    if len(args) != 1 {
+
+    return shim.Error("Incorrect number of arguments. Expecting 1")
+
+    }
+
+    tunaAsBytes, _ := APIstub.GetState(args[0])
+
+    if tunaAsBytes == nil {
+
+    return shim.Error(“Could not locate tuna”)
+
+    }
+
+    return shim.Success(tunaAsBytes)
+
+    }
+
+### Chaincode Methods - initLedger
+
+The initLedger method will add test data to our network.
+
+    func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
+
+    tuna := []Tuna{
+
+    Tuna{Vessel: "923F", Location: "67.0006, -70.5476", Timestamp: "1504054225", Holder: "Miriam"},
+
+    Tuna{Vessel: "M83T", Location: "91.2395, -49.4594", Timestamp: "1504057825", Holder: "Dave"},
+
+    Tuna{Vessel: "T012", Location: "58.0148, 59.01391", Timestamp: "1493517025", Holder: "Igor"},
+
+    Tuna{Vessel: "P490", Location: "-45.0945, 0.7949", Timestamp: "1496105425", Holder: "Amalea"},
+
+    Tuna{Vessel: "S439", Location: "-107.6043, 19.5003", Timestamp: "1493512301", Holder: "Rafa"},
+
+    Tuna{Vessel: "J205", Location: "-155.2304, -15.8723", Timestamp: "1494117101", Holder: "Shen"},
+
+    Tuna{Vessel: "S22L", Location: "103.8842, 22.1277", Timestamp: "1496104301", Holder: "Leila"},
+
+    Tuna{Vessel: "EI89", Location: "-132.3207, -34.0983", Timestamp: "1485066691", Holder: "Yuan"},
+
+    Tuna{Vessel: "129R", Location: "153.0054, 12.6429", Timestamp: "1485153091", Holder: "Carlo"},
+
+    Tuna{Vessel: "49W4", Location: "51.9435, 8.2735", Timestamp: "1487745091", Holder: "Fatima"},
+
+    }
+
+    i := 0
+
+    for i < len(tuna) {
+
+    fmt.Println("i is ", i)
+
+    tunaAsBytes, _ := json.Marshal(tuna[i])
+
+    APIstub.PutState(strconv.Itoa(i+1), tunaAsBytes)
+
+    fmt.Println("Added", tuna[i])
+
+    i = i + 1
 
     }
 
     return shim.Success(nil)
 
-}
+    }
+
+### Chaincode Methods - recordTuna
+
+The recordTuna method is the method a fisherman like Sarah would use to record each of her tuna catches. This method takes in five arguments (attributes to be saved in the ledger).
+
+    func (s *SmartContract) recordTuna(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+    if len(args) != 5 {
+
+    return shim.Error("Incorrect number of arguments. Expecting 5")
+
+    }
+
+    var tuna = Tuna{ Vessel: args[1], Location: args[2], Timestamp: args[3], Holder: args[4]}
+
+    tunaAsBytes, _ := json.Marshal(tuna)
+
+    err := APIstub.PutState(args[0], tunaAsBytes)
+
+    if err != nil {
+
+    return shim.Error(fmt.Sprintf("Failed to record tuna catch: %s", args[0]))
+
+    }
+
+    return shim.Success(nil)
+
+    }
+
+
+### Chaincode Methods - queryAllTuna
+
+The queryAllTuna method allows for assessing all the records; in this case, all the Tuna records added to the ledger. This method does not take any arguments. It will return a JSON string containing the results.
+
+    func (s *SmartContract) queryAllTuna(APIstub shim.ChaincodeStubInterface) sc.Response {
+
+    startKey := "0"
+
+    endKey := "999"
+
+    resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
+
+    if err != nil {
+
+    return shim.Error(err.Error())
+
+    }
+
+    defer resultsIterator.Close()
+
+    // buffer is a JSON array containing QueryResults
+
+    var buffer bytes.Buffer
+
+    buffer.WriteString("[")
+
+    bArrayMemberAlreadyWritten := false
+
+    for resultsIterator.HasNext() {
+
+    queryResponse, err := resultsIterator.Next()
+
+    if err != nil {
+
+    return shim.Error(err.Error())
+
+    }
+
+    // Add a comma before array members, suppress it for the first array member
+
+    if bArrayMemberAlreadyWritten == true {
+
+    buffer.WriteString(",")
+
+    }
+
+    buffer.WriteString("{\"Key\":")
+
+    buffer.WriteString("\"")
+
+    buffer.WriteString(queryResponse.Key)
+
+    buffer.WriteString("\"")
+
+    buffer.WriteString(", \"Record\":")
+
+    // Record is a JSON object, so we write as-is
+
+    buffer.WriteString(string(queryResponse.Value))
+
+    buffer.WriteString("}")
+
+    bArrayMemberAlreadyWritten = true
+
+    }
+
+    buffer.WriteString("]")
+
+    fmt.Printf("- queryAllTuna:\n%s\n", buffer.String())
+
+    return shim.Success(buffer.Bytes())
+
+    }
+
+### Chaincode Methods - changeTunaHolder
+
+As the tuna fish is passed to different parties in the supply chain, the data in the world state can be updated with who has possession. The changeTunaHolder method takes in 2 arguments, tuna id and new holder name.
+
+    func (s *SmartContract) changeTunaHolder(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+    if len(args) != 2 {
+
+    return shim.Error("Incorrect number of arguments. Expecting 2")
+
+    }
+
+    tunaAsBytes, _ := APIstub.GetState(args[0])
+
+    if tunaAsBytes != nil {
+
+    return shim.Error("Could not locate tuna")
+
+    }
+
+    tuna := Tuna{}
+
+    json.Unmarshal(tunaAsBytes, &tuna)
+
+    // Normally check that the specified argument is a valid holder of tuna but here we are skipping this check for this example. 
+
+    tuna.Holder = args[1]
+
+    tunaAsBytes, _ = json.Marshal(tuna)
+
+    err := APIstub.PutState(args[0], tunaAsBytes)
+
+    if err != nil {
+
+    return shim.Error(fmt.Sprintf("Failed to change tuna holder: %s", args[0]))
+
+    }
+
+    return shim.Success(nil)
+
+    }
+
+### Conclusion
+
+We hope you now have a better idea of how chaincode is constructed and written, especially when applied to a simple example. To see all the code snippets, visit the educational GitHub repository: https://github.com/hyperledger/education/blob/master/LFS171x/fabric-material/chaincode/tuna-app/tuna-chaincode.go.
+
+### What is a blockchain Application?
+
+In a blockchain application, the blockchain will store the state of the system, in addition to the immutable record of transactions that created that state.
+
+A client application will be used to send transactions to the blockchain.
+
+The smart contracts will encode some (if not all) of the business logic.
+
+### How Applications Interact with the Network
+
+Applications use APIs to run smart contracts.
+
+In Hyperledger Fabric, these smart contracts are called chaincode.
+
+These contracts are hosted on the network, and identified by name and version.
+
+APIs are accessible with a software development kit, or SDK.
+
+Currently, Hyperledger Fabric has three options for developers: Node.js, Java SDK, and CLI.
+
+### Fabric Node.js SDK
+
+In this exercise, we will be using the Node.js SDK (https://fabric-sdk-node.github.io/) to interact with the network, and, therefore, the ledger.
+
+The Hyperledger Fabric Client SDK makes it easy to use APIS to interact with a Hyperledger Fabric blockchain.
+
+This section will help you write your first application, starting with a test Hyperledger Fabric network, then learning the parameters of the sample smart contract, and lastly developing the application to query and update ledger records.
+
+For additional info, visit the Hyperledger Fabric Node SDK doc: https://fabric-sdk-node.github.io/tutorial-app-dev-env-setup.html
+
+### 
