@@ -1,0 +1,135 @@
+# Some resuable sections, note the top-level keys 'defaults' and 'tag_filters'
+# have no special meaning, they just exist so I can alias them and import them
+# in later blocks
+defaults: &defaults
+  working_directory: /go/src/github.com/hyperledger/burrow
+  docker:
+    - image: circleci/golang:1.8.1
+
+tag_filters: &tags_filters
+  tags:
+    only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+setup_docker: &setup_docker
+  version: 17.06.1-ce
+
+# Start of CircleCI 2.0 config
+version: 2
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: go get github.com/Masterminds/glide
+      - run: glide install
+
+      # Just persist the entire working dir (burrow checkout)
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run: make test
+
+  test_integration:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run: make test_integration
+
+  build_docker:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+        # This allows us to perform our docker builds
+      - setup_remote_docker:
+          <<: *setup_docker
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS quay.io
+        # build docker image and tag the docker image(s) depending on branch/tag
+      - run: make build_docker_db
+      - run: docker save quay.io/monax/db > db-images.tar
+      - persist_to_workspace:
+          root: .
+          paths:
+            - db-images.tar
+
+  # Simple smoke test to ensure burrow binary has been provisioned to container
+  test_docker_smoke:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - setup_remote_docker:
+          <<: *setup_docker
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS quay.io
+      - run: docker load -i db-images.tar
+      - run: docker run quay.io/monax/db:$(./scripts/local_version.sh) burrow -h
+
+  push_docker:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - setup_remote_docker:
+          <<: *setup_docker
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS quay.io
+      - run: docker load -i db-images.tar
+      - run: docker push quay.io/monax/db
+
+
+workflows:
+  version: 2
+
+  test_and_release:
+    jobs:
+      - checkout_code:
+          # Rather annoyingly we need to include tags_filters on all transitive
+          # dependencies if we want the deploy job to build against a version
+          # tag.
+          # In contract jobs build against all branches by default
+          filters:
+            <<: *tags_filters
+            
+      - test:
+          requires:
+            - checkout_code
+          filters:
+            <<: *tags_filters
+
+      - test_integration:
+          requires:
+            - checkout_code
+          filters:
+            <<: *tags_filters
+
+      - build_docker:
+          requires:
+            - checkout_code
+          filters:
+            <<: *tags_filters
+
+      - test_docker_smoke:
+          requires:
+            - build_docker
+          filters:
+            <<: *tags_filters
+
+      - push_docker:
+          requires:
+            - test
+            - test_integration
+            - test_docker_smoke
+          filters:
+            # tags filters and branch filters are applied disjunctively, so we
+            # will still build tags not on develop (i.e. including tagged
+            # releases on master that we specifically want to build)
+            <<: *tags_filters
+            branches:
+              only: develop
+

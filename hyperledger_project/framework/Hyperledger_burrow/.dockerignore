@@ -1,0 +1,14 @@
+.github
+.git
+.gitignore
+.project
+run.sh
+build_tool.sh
+Makefile
+Vagrantfile
+Dockerfile
+CHANGELOG.md
+README.md
+.circleci
+docs
+vendor

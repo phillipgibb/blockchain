@@ -1,0 +1,40 @@
+
+<!-- Copyright IBM Corp, All Rights Reserved.
+
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Block Chain Cloud Service">
+    <meta name="author" content="Baohua Yang">
+    <link rel="icon" href="../static/img/favicon.ico">
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/dist/index.css') }}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% block head %}
+        <title>Cello Dashboard</title>
+    {% endblock %}
+
+</head>
+
+<body>
+
+<div id="root"></div>
+<script src="//cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+<script src="//cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+<script src="//cdn.bootcss.com/echarts/3.4.0/echarts.min.js"></script>
+<script src="//cdn.bootcss.com/validator/7.0.0/validator.min.js"></script>
+<script src="{{ url_for('static', filename='js/dist/index.js') }}"> </script>
+<script>
+    window.username = "{{ username }}"
+    window.isAdmin = "{{ is_admin }}"
+</script>
+
+</body>
+</html>
